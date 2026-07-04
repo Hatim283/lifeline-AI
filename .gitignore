@@ -1,0 +1,51 @@
+# Python caches and bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Type checking
+.mypy_cache/
+
+# Build directories
+build/
+dist/
+*.egg-info/
+
+# Logs
+logs/
+*.log
+
+# IDEs and OS files
+.idea/
+.vscode/
+.DS_Store
+
+# Docker overrides
+docker-compose.override.yml
+docker-compose.override.yaml
+
+# Temporary files
+*.tmp
+*.temp
+*~
+*.bak
+
+# Explicitly track essential configuration and documentation
+!.env.example
+!requirements.txt
+!Dockerfile
+!README.md
