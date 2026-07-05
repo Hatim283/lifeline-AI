@@ -152,8 +152,15 @@ Following Google Cloud and GitHub security best practices:
 Edit the `.env` file locally and populate it with the required keys:
 
 - `GEMINI_API_KEY`: Required. Your Google Gemini API key for core reasoning.
-- `OPENWEATHER_API_KEY`: Required. Used by the Weather Tool to fetch live meteorological data.
-- `GOOGLE_MAPS_API_KEY`: Required. Used by the Maps Tool for geocoding and routing.
+- `OPENWEATHER_API_KEY`: Required. Used by the Weather Tool to fetch live meteorological data. Ensure the **Weather API** is enabled.
+- `GOOGLE_MAPS_API_KEY`: Required. Used by the Maps Tool for geocoding and routing. Ensure the following APIs are enabled for this key:
+  - Directions API
+  - Geocoding API
+  - Geolocation API
+  - Places API (New)
+  - Places API
+  - Time Zone API
+  - Routes API
 - `GOOGLE_CALENDAR_CREDENTIALS`: Optional. Path to a GCP service account JSON file for calendar synchronization.
 
 ---
