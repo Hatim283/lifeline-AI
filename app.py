@@ -391,11 +391,14 @@ def handle_user_input(user_input: str) -> None:
                 st.session_state.agent_state = new_state
                 save_state(new_state)
                 
-                summary = "I have analyzed your situation. "
-                if new_state.logistical_alternatives:
-                    summary += f"Generated {len(new_state.logistical_alternatives)} recovery options. "
-                if new_state.pending_communications:
-                    summary += f"There is a communication draft waiting for your approval."
+                if new_state.workflow_status == "error":
+                    summary = "I encountered a critical error while trying to analyze your situation. Please check the Developer Logs for more details."
+                else:
+                    summary = "I have analyzed your situation. "
+                    if new_state.logistical_alternatives:
+                        summary += f"Generated {len(new_state.logistical_alternatives)} recovery options. "
+                    if new_state.pending_communications:
+                        summary += f"There is a communication draft waiting for your approval."
                     
                 reply_msg = ChatMessage(role="assistant", content=summary.strip(), timestamp=generate_utc_timestamp())
                 st.session_state.agent_state.messages.append(reply_msg)
