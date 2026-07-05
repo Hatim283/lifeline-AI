@@ -235,12 +235,6 @@ If you do not have access to the required API keys, you can test the application
 
 ![Demo Mode Screenshot](docs/demo_screenshot.png)
 
-![Dashboard](docs/dashboard.png)
-
-![Planner](docs/planner.png)
-
-![Communication Drafts](docs/chat.png)
-
 ---
 
 ## Testing
