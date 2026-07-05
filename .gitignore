@@ -9,8 +9,10 @@ __pycache__/
 venv/
 env/
 
-# Environment variables
+# Environment variables and secrets
 .env
+env.yaml
+secrets.yaml
 
 # Testing and coverage
 .pytest_cache/
@@ -43,6 +45,7 @@ docker-compose.override.yaml
 *.temp
 *~
 *.bak
+.streamlit/
 
 # Explicitly track essential configuration and documentation
 !.env.example

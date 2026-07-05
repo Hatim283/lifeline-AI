@@ -7,7 +7,8 @@ from typing import Optional, List, Dict, Any
 import pandas as pd
 import sqlite3
 import folium
-from streamlit_folium import st_foliumimport streamlit as st
+from streamlit_folium import st_folium
+import streamlit as st
 import os
 import json
 from dotenv import load_dotenv

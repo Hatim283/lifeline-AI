@@ -1,47 +1,44 @@
 # Lifeline AI
 
-Lifeline AI is an autonomous, multi-agent concierge designed to handle logistical disruptions. Built for the Google × Kaggle AI Agents Intensive Capstone, it uses Google's Gemini models to assess crises, orchestrate external API tools (such as mapping, weather, and calendars), evaluate risk, and draft stakeholder communications.
+Lifeline AI is an autonomous, multi-agent concierge designed to handle logistical disruptions. Built for the Google × Kaggle AI Agents Intensive Capstone, it uses Google's Gemini models to assess crises, orchestrate external API tools, evaluate risk, and draft stakeholder communications.
 
 ---
 
 ## Problem Statement
 
-When unexpected logistical disruptions occur—like a cancelled flight or sudden weather event—individuals must manually navigate across various data sources to find alternatives, assess the impact on their schedule, and notify affected parties. This process is time-consuming, fragmented, and stressful.
+When unexpected logistical disruptions occur, individuals must manually navigate across various data sources to find alternatives, assess the impact on their schedule, and notify affected parties. This process is time-consuming, fragmented, and error-prone.
 
 ---
 
 ## Solution
 
-Lifeline AI addresses this by acting as an autonomous orchestrator. Instead of relying on manual lookup, the agent ingests a natural language description of the disruption, decides which APIs to query for missing context, and formulates an end-to-end recovery plan. It identifies schedule conflicts, factors in environmental variables, and prepares communications for human review.
+Lifeline AI acts as an autonomous orchestrator. The agent ingests a natural language description of a disruption, determines which APIs to query for missing context, and formulates an end-to-end recovery plan. It identifies schedule conflicts, factors in environmental variables, and prepares communications for human review.
 
 ---
 
 ## Features
 
 ### Implemented Features
-
-- ✅ Incident analysis (LLM-based text extraction and classification)
-- ✅ Weather integration (OpenWeather API for local conditions)
-- ✅ Google Maps integration (Routing, geolocation, and nearby services)
-- ✅ Calendar conflict detection (Google Calendar event parsing)
-- ✅ Risk assessment (Quantitative risk scoring based on aggregated data)
-- ✅ Communication drafting (Email and message templates)
-- ✅ Streamlit dashboard (Real-time agent state visualization)
-- ✅ Demo mode (Deterministic mock data without requiring API keys)
-- ✅ Local state persistence (Session tracking in `.lifeline_sessions/`)
+- ✅ Incident analysis
+- ✅ Weather integration
+- ✅ Google Maps integration
+- ✅ Calendar conflict detection
+- ✅ Risk assessment
+- ✅ Communication drafting
+- ✅ Streamlit dashboard
+- ✅ Demo mode
+- ✅ Local state persistence
 
 ### Future Enhancements
-
 - ⬜ OAuth2 integration for authenticated Google Calendar modifications
-- ⬜ Integration with real-time flight status APIs
+- ⬜ Integration with flight status APIs
 - ⬜ Multi-user session management
-- ⬜ Direct API hook for sending emails/messages post-approval
 
 ---
 
 ## Architecture
 
-Lifeline AI uses a stateful, dynamic agent graph pattern. Rather than executing a rigid, linear script, the core agent uses a routing node to determine its next action based on current state and missing context.
+Lifeline AI uses a stateful, dynamic agent graph pattern. Rather than executing a linear script, the core agent uses a routing node to determine its next action based on current state and missing context.
 
 ```mermaid
 graph TD
@@ -71,7 +68,7 @@ graph TD
 - **Dynamic Router:** Decides which tools need to be executed based on the `AgentState`.
 - **Tools (Weather, Maps, Calendar):** Asynchronous API wrappers that retrieve environmental and scheduling context.
 - **Planner Node:** Synthesizes the gathered context into actionable logistical alternatives.
-- **Risk Engine:** Normalizes the disruption parameters into an executive risk score (0-100).
+- **Risk Engine:** Normalizes the disruption parameters into a quantitative risk score (0-100).
 - **Communication Node:** Generates tailored messages for stakeholders.
 - **Human-in-the-Loop (HITL):** Awaits user review via the Streamlit interface before finalizing actions.
 
@@ -114,6 +111,16 @@ lifeline/
 
 ---
 
+## Security
+
+Following Google Cloud and GitHub security best practices:
+- **Never commit API keys:** Ensure you never place raw API keys into source control or inline terminal commands.
+- **Rotate compromised keys:** If a key is accidentally committed, revoke and rotate it immediately via the respective provider dashboard.
+- **Environment files:** Keep `.env` strictly local. Ensure it is listed in `.gitignore`.
+- **Cloud Run Deployment:** Do not pass secrets directly via `--set-env-vars`. Use Google Cloud Secret Manager or an ignored `env.yaml` file for secure deployments.
+
+---
+
 ## Installation
 
 1. **Clone the repository:**
@@ -142,7 +149,7 @@ lifeline/
 
 ## Environment Variables
 
-Edit the `.env` file and populate it with the required keys:
+Edit the `.env` file locally and populate it with the required keys:
 
 - `GEMINI_API_KEY`: Required. Your Google Gemini API key for core reasoning.
 - `OPENWEATHER_API_KEY`: Required. Used by the Weather Tool to fetch live meteorological data.
@@ -165,14 +172,25 @@ Navigate to `http://localhost:8501` in your browser.
 
 ### Docker
 
-Build and run the container locally:
+Build and run the container locally. Note that the container maps to port 8080 by default to align with Cloud Run conventions.
 
 ```bash
 docker build -t lifeline-ai .
-docker run -p 8501:8501 --env-file .env lifeline-ai
+docker run -p 8080:8080 --env-file .env lifeline-ai
 ```
 
+Navigate to `http://localhost:8080` in your browser.
+
 ### Google Cloud Run
+
+For secure deployment to Google Cloud Run, avoid inline secrets. Instead, create an `env.yaml` file in the root directory (this file is ignored by Git).
+
+Format your `env.yaml` like this:
+```yaml
+GEMINI_API_KEY: "your_gemini_key"
+OPENWEATHER_API_KEY: "your_openweather_key"
+GOOGLE_MAPS_API_KEY: "your_maps_key"
+```
 
 Deploy directly to Google Cloud Run using the `gcloud` CLI:
 
@@ -181,14 +199,16 @@ gcloud run deploy lifeline-ai \
   --source . \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars="GEMINI_API_KEY=your_key,OPENWEATHER_API_KEY=your_key,GOOGLE_MAPS_API_KEY=your_key"
+  --env-vars-file=env.yaml
 ```
+
+Alternatively, use **Google Cloud Secret Manager** to natively inject secrets into the container environment.
 
 ---
 
 ## Demo Mode
 
-If you do not have access to the required API keys, you can still test the application logic. Toggling "Enable Demo Mode" in the sidebar will bypass external API calls and inject deterministic mock data. This allows you to evaluate the UI, agent state transitions, and generated communications for predefined scenarios (e.g., flight cancellation, medical emergency).
+If you do not have access to the required API keys, you can test the application logic using Demo Mode. Toggling "Enable Demo Mode" in the sidebar bypasses external API calls and injects deterministic mock data. This allows evaluation of the UI, agent state transitions, and generated communications for predefined scenarios (e.g., flight cancellation, medical emergency).
 
 ---
 
@@ -212,8 +232,6 @@ If you do not have access to the required API keys, you can still test the appli
 
 ![Communication Drafts](docs/chat.png)
 
-*(Note: Add actual screenshots to the `docs/` folder in your repository to replace these placeholders).*
-
 ---
 
 ## Testing
@@ -228,9 +246,9 @@ pytest tests/ -v
 
 ---
 
-## Limitations
+## Known Limitations
 
-- **Prototype:** This is a demonstration project built for an educational capstone.
+- **Prototype:** This is a hackathon prototype built for an educational capstone, not a production system.
 - **External Dependencies:** The system relies on third-party APIs which may experience rate limits or failures.
 - **Human Verification Required:** The system generates plans and communications based on LLM reasoning. A human must verify all actions before executing them.
 - **Not for Emergencies:** This application is not intended for real-world emergency response or life-critical decision making.
@@ -241,8 +259,7 @@ pytest tests/ -v
 
 - Implement OAuth2 flow for native Google Calendar integration.
 - Expand test coverage for complex edge cases in the dynamic router.
-- Implement robust retry mechanisms and exponential backoff for API calls.
-- Add support for localized natural language processing outside of English.
+- Implement retry mechanisms and exponential backoff for API calls.
 
 ---
 
@@ -258,7 +275,7 @@ Contributions are welcome. Please ensure that you:
 
 ## License
 
-This project is licensed under the MIT License.
+MIT
 
 ---
 

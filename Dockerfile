@@ -3,7 +3,7 @@ FROM python:3.11-slim
 # Set environment variables to optimize Python and configure Streamlit
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    STREAMLIT_SERVER_PORT=8501 \
+    STREAMLIT_SERVER_PORT=8080 \
     STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
     STREAMLIT_SERVER_ENABLE_CORS=false \
     STREAMLIT_SERVER_HEADLESS=true
@@ -30,7 +30,7 @@ RUN chown -R appuser:appuser /app
 USER appuser
 
 # Expose the port Streamlit runs on
-EXPOSE 8501
+EXPOSE 8080
 
 # Run the Streamlit application
 CMD ["streamlit", "run", "app.py"]
